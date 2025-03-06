@@ -1,12 +1,14 @@
-'use client';
-
 import { Geist } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from '@/contexts/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import TopBar from "@/components/TopBar";
+import type { Metadata } from 'next';
+import ClientWrapper from '@/app/client-wrapper';
 
 const geist = Geist({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Auth with Supabase and Google',
+  description: 'Next.js app with Supabase Auth and Google Drive integration',
+};
 
 export default function RootLayout({
   children,
@@ -16,13 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={geist.className}>
-        <AuthProvider>
-          <ProtectedRoute>
-            <TopBar />
-            <main>{children}</main>
-          </ProtectedRoute>
-        </AuthProvider>
+        <ClientWrapper>
+          {children}
+        </ClientWrapper>
       </body>
     </html>
   );
-}
+} 

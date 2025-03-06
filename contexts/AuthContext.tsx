@@ -38,16 +38,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Initial session check
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    console.log('[AuthContext] Checking initial session');
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('[AuthContext] Error getting session:', error);
+      }
+      
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session) {
+        console.log(`[AuthContext] User authenticated: ${session.user.email}`);
+      } else {
+        console.log('[AuthContext] No active session');
+      }
+      
       setIsLoading(false);
     });
 
     // Listen for auth changes
+    console.log('[AuthContext] Setting up auth state change listener');
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log(`[AuthContext] Auth state changed: ${_event}`);
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session) {
+        console.log(`[AuthContext] User authenticated after state change: ${session.user.email}`);
+      } else {
+        console.log('[AuthContext] No active session after state change');
+      }
+      
       setIsLoading(false);
     });
 

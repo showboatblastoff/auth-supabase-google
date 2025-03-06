@@ -1,6 +1,5 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { createServerSupabaseClient } from '@/utils/supabaseServer';
 
 export async function GET(request: Request) {
   console.log('AuthCallback: Processing callback');
@@ -10,7 +9,8 @@ export async function GET(request: Request) {
 
   if (code) {
     console.log('AuthCallback: Exchanging code for session');
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = await createServerSupabaseClient();
+
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     
     if (error) {
@@ -20,6 +20,7 @@ export async function GET(request: Request) {
 
     // Ensure profile exists
     if (data?.user) {
+      console.log(`AuthCallback: Creating/updating profile for user ${data.user.id}`);
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert(
@@ -33,6 +34,8 @@ export async function GET(request: Request) {
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
+      } else {
+        console.log('Profile created/updated successfully');
       }
     }
 

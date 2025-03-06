@@ -43,6 +43,16 @@ export default function TopBar() {
         </Link>
 
         <div className="flex items-center gap-4">
+          {/* Main Navigation */}
+          <nav className="hidden md:flex items-center gap-4">
+            <Link href="/" className="hover:text-gray-300 px-3 py-2">
+              Home
+            </Link>
+            <Link href="/drive" className="hover:text-gray-300 px-3 py-2">
+              Google Drive
+            </Link>
+          </nav>
+          
           {/* Subscription Button
           {!isLoadingSubscription && (
             !subscription || 
@@ -77,6 +87,13 @@ export default function TopBar() {
                   onClick={() => setIsDropdownOpen(false)}
                 >
                   Profile & Subscription
+                </Link>
+                <Link
+                  href="/drive"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setIsDropdownOpen(false)}
+                >
+                  Google Drive
                 </Link>
                 <button
                   onClick={handleLogout}
